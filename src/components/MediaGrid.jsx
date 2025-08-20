@@ -61,7 +61,7 @@ const MediaGrid = ({ onMediaClick, uploadCount }) => {
           className={`bg-gray-200 cursor-pointer ${getItemClass(index, mediaItems.length)}`}
           onClick={() => onMediaClick(item)}
         >
-          <img src={item.src} alt={`media ${item.id}`} className="w-full h-full object-cover" />
+          <img src={item.src} alt={`media ${item.id}`} className="w-full h-full object-contain" />
         </div>
       ))}
     </div>
