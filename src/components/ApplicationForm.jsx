@@ -1,81 +1,159 @@
-import React, { useState } from 'react';
-import { db } from '../firebase'; // Adjust the path if firebase.js is located elsewhere
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState } from "react";
+import { db } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 
 const ApplicationForm = () => {
-  const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+  const [formData, setFormData] = useState({
+    studentId: "",
+    name: "",
+    contact: "",
+    hasSmartwatch: false,
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
+  const [submitMessage, setSubmitMessage] = useState("");
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: value }));
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { id, checked } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: checked }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !contact) {
-      setSubmitMessage('이름과 연락처를 모두 입력해주세요.');
+    if (!formData.studentId || !formData.name || !formData.contact) {
+      setSubmitMessage("학번, 이름, 연락처는 필수 항목입니다.");
       return;
     }
     setIsSubmitting(true);
-    setSubmitMessage('');
+    setSubmitMessage("");
 
     try {
-      const docRef = await addDoc(collection(db, 'applications'), {
-        name: name,
-        contact: contact,
+      await addDoc(collection(db, "applications"), {
+        ...formData,
         submittedAt: new Date(),
       });
-      console.log("Document written with ID: ", docRef.id);
-      setSubmitMessage('참가 신청이 완료되었습니다!');
-      setName('');
-      setContact('');
+      setSubmitMessage(
+        "참가 신청이 성공적으로 완료되었습니다! 폼은 5초 후에 다시 나타납니다."
+      );
+      setTimeout(() => {
+        setSubmitMessage("");
+        setFormData({
+          studentId: "",
+          name: "",
+          contact: "",
+          hasSmartwatch: false,
+        });
+      }, 5000);
     } catch (error) {
       console.error("Error adding document: ", error);
-      setSubmitMessage('오류가 발생했습니다. 다시 시도해주세요.');
+      setSubmitMessage("오류가 발생했습니다. 다시 시도해주세요.");
     }
     setIsSubmitting(false);
   };
 
+  if (submitMessage.includes("완료")) {
+    return (
+      <div className="max-w-md mx-auto my-10 text-center p-10 bg-white rounded-2xl shadow-xl">
+        <h2 className="text-2xl font-bold text-green-500">신청 완료!</h2>
+        <p className="mt-4 text-gray-600">{submitMessage}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto mt-10 p-8 border border-gray-300 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-center mb-6">동아리 참가 신청</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">이름</label>
+    <div className="max-w-md mx-auto my-10 bg-white p-8 rounded-2xl shadow-xl">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-extrabold text-gray-900">
+          피트니스가락 참가 신청
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          피트니스 가락과 함께 건강한 학교 생활을 시작하세요!
+        </p>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex items-center">
+          <label
+            htmlFor="studentId"
+            className="w-20 text-sm font-semibold text-gray-700 flex-shrink-0"
+          >
+            학번
+          </label>
+          <input
+            type="text"
+            id="studentId"
+            value={formData.studentId}
+            onChange={handleChange}
+            className="flex-grow block w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            placeholder="20251234"
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className="flex items-center">
+          <label
+            htmlFor="name"
+            className="w-20 text-sm font-semibold text-gray-700 flex-shrink-0"
+          >
+            이름
+          </label>
           <input
             type="text"
             id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="이름을 입력하세요"
+            value={formData.name}
+            onChange={handleChange}
+            className="flex-grow block w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            placeholder="홍길동"
             disabled={isSubmitting}
           />
         </div>
-        <div className="mb-6">
-          <label htmlFor="contact" className="block text-gray-700 text-sm font-bold mb-2">연락처</label>
+        <div className="flex items-center">
+          <label
+            htmlFor="contact"
+            className="w-20 text-sm font-semibold text-gray-700 flex-shrink-0"
+          >
+            연락처
+          </label>
           <input
-            type="text"
+            type="tel"
             id="contact"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-            placeholder="전화번호 또는 이메일"
+            value={formData.contact}
+            onChange={handleChange}
+            className="flex-grow block w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            placeholder="010-1234-5678"
             disabled={isSubmitting}
           />
         </div>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center pt-4">
+          <input
+            id="hasSmartwatch"
+            type="checkbox"
+            checked={formData.hasSmartwatch}
+            onChange={handleCheckboxChange}
+            className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded-md shadow-sm"
+            disabled={isSubmitting}
+          />
+          <label
+            htmlFor="hasSmartwatch"
+            className="ml-3 block text-sm font-medium text-gray-700"
+          >
+            스마트워치를 가지고 있습니다. (필수x)
+          </label>
+        </div>
+        <div className="text-center pt-6">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400"
+            className="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-lg text-base font-medium rounded-full text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transform transition-transform duration-200 hover:scale-105"
             disabled={isSubmitting}
           >
-            {isSubmitting ? '제출 중...' : '신청하기'}
+            {isSubmitting ? "제출 중..." : "신청서 제출"}
           </button>
         </div>
       </form>
-      {submitMessage && (
-        <p className={`text-center mt-4 ${submitMessage.includes('완료') ? 'text-green-500' : 'text-red-500'}`}>
-          {submitMessage}
-        </p>
+      {submitMessage && !submitMessage.includes("완료") && (
+        <p className="text-center mt-5 text-sm text-red-600">{submitMessage}</p>
       )}
     </div>
   );

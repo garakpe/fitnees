@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAKFnz7veilhX4GvKm3lXEnHHp9ou5gGDE",
   authDomain: "fitness-garak.firebaseapp.com",
   projectId: "fitness-garak",
-  storageBucket: "fitness-garak.appspot.com",
+  storageBucket: "fitness-garak.firebasestorage.app",
   messagingSenderId: "547476274901",
   appId: "1:547476274901:web:f5d19f40be2e459ee72c5c",
   measurementId: "G-ET5RDRZNT2"

@@ -32,6 +32,7 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="이메일 주소"
+            autoComplete="email"
           />
         </div>
         <div className="mb-6">
@@ -43,6 +44,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="비밀번호"
+            autoComplete="current-password"
           />
         </div>
         <div className="flex items-center justify-center">
