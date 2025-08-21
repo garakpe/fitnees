@@ -152,6 +152,16 @@ const ApplicationForm = () => {
           </button>
         </div>
       </form>
+      <div className="text-center mt-8">
+        <a
+          href="https://open.kakao.com/o/gpd2s6qh"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full inline-flex justify-center py-3 px-6 border border-transparent shadow-lg text-base font-medium rounded-full text-black bg-yellow-300 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transform transition-transform duration-200 hover:scale-105"
+        >
+          카카오톡 오픈채팅방 참여하기
+        </a>
+      </div>
       {submitMessage && !submitMessage.includes("완료") && (
         <p className="text-center mt-5 text-sm text-red-600">{submitMessage}</p>
       )}
